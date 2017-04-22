@@ -1,7 +1,7 @@
 # maya-toolkit-weight-manager
 
 ---
-![Example UI](docs/images/gui.png)
+![Example UI](docs/images/manager.png)
 
 Maya toolkit used to export / import skin weights.  
 
