@@ -14,7 +14,7 @@
 import os
 import time
 import getpass
-from PyQt4 import QtGui
+from QtSide import QtWidgets, QtGui
 from xml.etree.ElementTree import (ElementTree, 
                                    Element, 
                                    SubElement, 
@@ -23,7 +23,7 @@ import pymel.core as pm
 from ..ui.proc.utils import __pixmap__
 
 
-class SkinClusterMachine() :
+class SkinClusterMachine(object):
     IGNORE_VALUE = 0.00001
     OBJ_TYPE = ['mesh', 'nurbsSurface', 'nurbsCurve', 'lattice']
 
@@ -35,7 +35,7 @@ class SkinClusterMachine() :
         self.componentSkinWeightList = None
 
     def getTime(self) :
-        return time.strftime('%Y/%m/%d',time.localtime(time.time()))
+        return time.strftime('%Y/%m/%d', time.localtime(time.time()))
 
     def getSkinCluster(self, node=None) :
         whiteList = []
@@ -350,7 +350,7 @@ class SkinClusterMachine() :
                                                 QWidget=QWidget)
                         if QWidget != None :
                             QWidget[0].setValue(0)
-                            newItem = QtGui.QListWidgetItem(QWidget[1])
+                            newItem = QtWidgets.QListWidgetItem(QWidget[1])
                             newItem.linkType = 'weight'
                             newItem.linkPath = os.path.join(exportPath, (node.name().replace('|','#') + '[' + nodeShapeType + '].xml'))
                             newItem.linkName = node.name() + '[' + nodeShapeType + '].xml'
@@ -512,7 +512,7 @@ class SkinClusterMachine() :
 
             if QWidget != None :
                 QWidget[0].setValue(0)
-                newItem = QtGui.QListWidgetItem(QWidget[1])
+                newItem = QtWidgets.QListWidgetItem(QWidget[1])
                 newItem.linkType = 'weight'
                 newItem.linkPath = exportPath
                 newItem.linkName = node.name() + '[' + type + '].xml'

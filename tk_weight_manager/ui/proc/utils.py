@@ -12,18 +12,20 @@
 #
 ###########################################################################################
 import os
-from PyQt4 import QtGui
+from QtSide import QtWidgets, QtGui
 
 
 ICON_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'resource/icon').replace('\\', '/')
 
 
-def __icon__(image, suffix='png') :
+def __icon__(image, suffix='png'):
     icon = QtGui.QIcon()
-    icon.addPixmap(QtGui.QPixmap(os.path.join(ICON_PATH, '{0}.{1}'.format(image, suffix))), QtGui.QIcon.Normal, QtGui.QIcon.On)
+    icon.addPixmap(
+        QtGui.QPixmap(os.path.join(ICON_PATH, '{0}.{1}'.format(image, suffix)))
+    )
     return icon
 
 
-def __pixmap__(image, suffix='png') :
+def __pixmap__(image, suffix='png'):
     pixmap = QtGui.QPixmap(os.path.join(ICON_PATH, '{0}.{1}'.format(image, suffix)))
     return pixmap

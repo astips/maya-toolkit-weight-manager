@@ -14,21 +14,14 @@
 import maya.OpenMayaUI as OpenMayaUI
 import maya.OpenMaya as OpenMaya
 
-def connect(_type='PyQt4') :
-    if _type == 'PyQt4' :
-        try :
-            from PyQt4 import QtCore, QtGui
-            from sip import wrapinstance
-        except :
-            OpenMaya.MGlobal.displayError('Faild Loading PyQt4...')
-            return 
-    elif _type == 'PySide' :
-        try :
-            from PySide import QtGui, QtCore
-            from shiboken import wrapInstance as wrapinstance
-        except :
-            OpenMaya.MGlobal.displayError('Faild Loading PySide...')
-            return
-    
-    ptr = OpenMayaUI.MQtUtil.mainWindow()
-    return wrapinstance(long(ptr), QtGui.QMainWindow)
+
+def connect():
+    try:
+        from QtSide import QtWidgets, ui_wrapper
+    except Exception as e:
+        OpenMaya.MGlobal.displayError(e)
+        return None
+    return ui_wrapper.wrapinstance(
+        long(OpenMayaUI.MQtUtil.mainWindow()),
+        QtWidgets.QMainWindow
+    )

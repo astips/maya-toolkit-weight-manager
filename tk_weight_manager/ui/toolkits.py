@@ -11,13 +11,12 @@
 # Description: skinCluster weight machine
 #
 ###########################################################################################
-import os
-from PyQt4 import QtGui
+from QtSide import QtGui, QtWidgets
 from .resource import toolkits_qt
 from .proc.utils import __icon__
 
 
-class ToolKitsDialog(QtGui.QDialog, toolkits_qt.Ui_skinClusterToolKit_Dialog) :
+class ToolKitsDialog(QtWidgets.QDialog, toolkits_qt.Ui_skinClusterToolKit_Dialog) :
     def __init__(self, parent=None, machine=None) :
         super(ToolKitsDialog, self).__init__(parent)
         self.setupUi(self)

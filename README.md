@@ -1,11 +1,14 @@
 # Skin Weight Manager
 
----
 ![Example UI](docs/images/manager.png)
 
 Maya toolkit used to export / import skin weights.  
 
 ---
+
+#### DEPENDENCY
+- QtSide https://github.com/astips/QtSide
+
 
 #### SUPPORT
 
@@ -23,6 +26,8 @@ Maya toolkit used to export / import skin weights.
 2. Copy folder "tk_weight_manager" to `%USERPROFILE%\Documents\maya\mayaVersion\scripts`
 3. Run these two commands in Python to start the manager tool or toolkits tool.
 
+#### USAGE
+ 
 ```python
 from tk_weight_manager import startup
 startup.show_manager()  

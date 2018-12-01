@@ -17,7 +17,7 @@ from .core import machine
 
 
 def show_manager() :
-    ui = gui.MainDialog(parent=connect('PyQt4'), 
+    ui = gui.MainDialog(parent=connect(),
                         machine=machine.SkinClusterMachine()
                         )
     ui.show()
@@ -25,7 +25,7 @@ def show_manager() :
 
 
 def show_toolkits() :
-    ui = toolkits.ToolKitsDialog(parent=connect('PyQt4'), 
+    ui = toolkits.ToolKitsDialog(parent=connect(),
                                  machine=machine.SkinClusterMachine()
                                  )
     ui.show()

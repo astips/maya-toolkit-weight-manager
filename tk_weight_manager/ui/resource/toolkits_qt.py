@@ -7,7 +7,7 @@
 #
 # WARNING! All changes made in this file will be lost!
 
-from PyQt4 import QtCore, QtGui
+from QtSide import QtCore, QtGui, QtWidgets
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -16,30 +16,28 @@ except AttributeError:
         return s
 
 try:
-    _encoding = QtGui.QApplication.UnicodeUTF8
+    _encoding = QtWidgets.QApplication.UnicodeUTF8
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig, _encoding)
+        return QtWidgets.QApplication.translate(context, text, disambig, _encoding)
 except AttributeError:
     def _translate(context, text, disambig):
-        return QtGui.QApplication.translate(context, text, disambig)
+        return QtWidgets.QApplication.translate(context, text, disambig)
 
 class Ui_skinClusterToolKit_Dialog(object):
     def setupUi(self, skinClusterToolKit_Dialog):
         skinClusterToolKit_Dialog.setObjectName(_fromUtf8("skinClusterToolKit_Dialog"))
         skinClusterToolKit_Dialog.resize(211, 35)
-        self.skinClusterToolKit_Dialog_verticalLayout = QtGui.QVBoxLayout(skinClusterToolKit_Dialog)
+        self.skinClusterToolKit_Dialog_verticalLayout = QtWidgets.QVBoxLayout(skinClusterToolKit_Dialog)
         self.skinClusterToolKit_Dialog_verticalLayout.setSpacing(2)
-        self.skinClusterToolKit_Dialog_verticalLayout.setMargin(3)
         self.skinClusterToolKit_Dialog_verticalLayout.setObjectName(_fromUtf8("skinClusterToolKit_Dialog_verticalLayout"))
-        self.skinClusterToolKit_groupBox = QtGui.QGroupBox(skinClusterToolKit_Dialog)
+        self.skinClusterToolKit_groupBox = QtWidgets.QGroupBox(skinClusterToolKit_Dialog)
         self.skinClusterToolKit_groupBox.setTitle(_fromUtf8(""))
         self.skinClusterToolKit_groupBox.setObjectName(_fromUtf8("skinClusterToolKit_groupBox"))
-        self.skinClusterToolKit_groupBox_horizontalLayout = QtGui.QHBoxLayout(self.skinClusterToolKit_groupBox)
+        self.skinClusterToolKit_groupBox_horizontalLayout = QtWidgets.QHBoxLayout(self.skinClusterToolKit_groupBox)
         self.skinClusterToolKit_groupBox_horizontalLayout.setSpacing(2)
-        self.skinClusterToolKit_groupBox_horizontalLayout.setMargin(2)
         self.skinClusterToolKit_groupBox_horizontalLayout.setObjectName(_fromUtf8("skinClusterToolKit_groupBox_horizontalLayout"))
-        self.skinClusterToolKit_getInfluence_pushButton = QtGui.QPushButton(self.skinClusterToolKit_groupBox)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+        self.skinClusterToolKit_getInfluence_pushButton = QtWidgets.QPushButton(self.skinClusterToolKit_groupBox)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.skinClusterToolKit_getInfluence_pushButton.sizePolicy().hasHeightForWidth())
@@ -49,8 +47,8 @@ class Ui_skinClusterToolKit_Dialog(object):
         self.skinClusterToolKit_getInfluence_pushButton.setFlat(True)
         self.skinClusterToolKit_getInfluence_pushButton.setObjectName(_fromUtf8("skinClusterToolKit_getInfluence_pushButton"))
         self.skinClusterToolKit_groupBox_horizontalLayout.addWidget(self.skinClusterToolKit_getInfluence_pushButton)
-        self.skinClusterToolKit_holdInfluence_pushButton = QtGui.QPushButton(self.skinClusterToolKit_groupBox)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+        self.skinClusterToolKit_holdInfluence_pushButton = QtWidgets.QPushButton(self.skinClusterToolKit_groupBox)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.skinClusterToolKit_holdInfluence_pushButton.sizePolicy().hasHeightForWidth())
@@ -60,8 +58,8 @@ class Ui_skinClusterToolKit_Dialog(object):
         self.skinClusterToolKit_holdInfluence_pushButton.setFlat(True)
         self.skinClusterToolKit_holdInfluence_pushButton.setObjectName(_fromUtf8("skinClusterToolKit_holdInfluence_pushButton"))
         self.skinClusterToolKit_groupBox_horizontalLayout.addWidget(self.skinClusterToolKit_holdInfluence_pushButton)
-        self.skinClusterToolKit_unHoldSelectedInfluence_pushButton = QtGui.QPushButton(self.skinClusterToolKit_groupBox)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+        self.skinClusterToolKit_unHoldSelectedInfluence_pushButton = QtWidgets.QPushButton(self.skinClusterToolKit_groupBox)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.skinClusterToolKit_unHoldSelectedInfluence_pushButton.sizePolicy().hasHeightForWidth())
@@ -71,13 +69,13 @@ class Ui_skinClusterToolKit_Dialog(object):
         self.skinClusterToolKit_unHoldSelectedInfluence_pushButton.setFlat(True)
         self.skinClusterToolKit_unHoldSelectedInfluence_pushButton.setObjectName(_fromUtf8("skinClusterToolKit_unHoldSelectedInfluence_pushButton"))
         self.skinClusterToolKit_groupBox_horizontalLayout.addWidget(self.skinClusterToolKit_unHoldSelectedInfluence_pushButton)
-        self.line = QtGui.QFrame(self.skinClusterToolKit_groupBox)
-        self.line.setFrameShape(QtGui.QFrame.VLine)
-        self.line.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line = QtWidgets.QFrame(self.skinClusterToolKit_groupBox)
+        self.line.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line.setObjectName(_fromUtf8("line"))
         self.skinClusterToolKit_groupBox_horizontalLayout.addWidget(self.line)
-        self.skinClusterToolKit_copyComponentWeight_pushButton = QtGui.QPushButton(self.skinClusterToolKit_groupBox)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+        self.skinClusterToolKit_copyComponentWeight_pushButton = QtWidgets.QPushButton(self.skinClusterToolKit_groupBox)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.skinClusterToolKit_copyComponentWeight_pushButton.sizePolicy().hasHeightForWidth())
@@ -87,8 +85,8 @@ class Ui_skinClusterToolKit_Dialog(object):
         self.skinClusterToolKit_copyComponentWeight_pushButton.setFlat(True)
         self.skinClusterToolKit_copyComponentWeight_pushButton.setObjectName(_fromUtf8("skinClusterToolKit_copyComponentWeight_pushButton"))
         self.skinClusterToolKit_groupBox_horizontalLayout.addWidget(self.skinClusterToolKit_copyComponentWeight_pushButton)
-        self.skinClusterToolKit_pasteComponentWeight_pushButton = QtGui.QPushButton(self.skinClusterToolKit_groupBox)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+        self.skinClusterToolKit_pasteComponentWeight_pushButton = QtWidgets.QPushButton(self.skinClusterToolKit_groupBox)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.skinClusterToolKit_pasteComponentWeight_pushButton.sizePolicy().hasHeightForWidth())
@@ -98,13 +96,13 @@ class Ui_skinClusterToolKit_Dialog(object):
         self.skinClusterToolKit_pasteComponentWeight_pushButton.setFlat(True)
         self.skinClusterToolKit_pasteComponentWeight_pushButton.setObjectName(_fromUtf8("skinClusterToolKit_pasteComponentWeight_pushButton"))
         self.skinClusterToolKit_groupBox_horizontalLayout.addWidget(self.skinClusterToolKit_pasteComponentWeight_pushButton)
-        self.line_2 = QtGui.QFrame(self.skinClusterToolKit_groupBox)
-        self.line_2.setFrameShape(QtGui.QFrame.VLine)
-        self.line_2.setFrameShadow(QtGui.QFrame.Sunken)
+        self.line_2 = QtWidgets.QFrame(self.skinClusterToolKit_groupBox)
+        self.line_2.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line_2.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_2.setObjectName(_fromUtf8("line_2"))
         self.skinClusterToolKit_groupBox_horizontalLayout.addWidget(self.line_2)
-        self.skinClusterToolKit_resetBindPose_pushButton = QtGui.QPushButton(self.skinClusterToolKit_groupBox)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+        self.skinClusterToolKit_resetBindPose_pushButton = QtWidgets.QPushButton(self.skinClusterToolKit_groupBox)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.skinClusterToolKit_resetBindPose_pushButton.sizePolicy().hasHeightForWidth())
@@ -114,8 +112,8 @@ class Ui_skinClusterToolKit_Dialog(object):
         self.skinClusterToolKit_resetBindPose_pushButton.setFlat(True)
         self.skinClusterToolKit_resetBindPose_pushButton.setObjectName(_fromUtf8("skinClusterToolKit_resetBindPose_pushButton"))
         self.skinClusterToolKit_groupBox_horizontalLayout.addWidget(self.skinClusterToolKit_resetBindPose_pushButton)
-        self.skinClusterToolKit_removeUnusedInfluence_pushButton = QtGui.QPushButton(self.skinClusterToolKit_groupBox)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+        self.skinClusterToolKit_removeUnusedInfluence_pushButton = QtWidgets.QPushButton(self.skinClusterToolKit_groupBox)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.skinClusterToolKit_removeUnusedInfluence_pushButton.sizePolicy().hasHeightForWidth())
@@ -125,7 +123,7 @@ class Ui_skinClusterToolKit_Dialog(object):
         self.skinClusterToolKit_removeUnusedInfluence_pushButton.setFlat(True)
         self.skinClusterToolKit_removeUnusedInfluence_pushButton.setObjectName(_fromUtf8("skinClusterToolKit_removeUnusedInfluence_pushButton"))
         self.skinClusterToolKit_groupBox_horizontalLayout.addWidget(self.skinClusterToolKit_removeUnusedInfluence_pushButton)
-        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.skinClusterToolKit_groupBox_horizontalLayout.addItem(spacerItem)
         self.skinClusterToolKit_Dialog_verticalLayout.addWidget(self.skinClusterToolKit_groupBox)
 
