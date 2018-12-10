@@ -4,14 +4,12 @@
 
 Maya toolkit used to export / import skin weights.  
 
----
 
 #### DEPENDENCY
 - QtSide https://github.com/astips/QtSide
 
 
 #### SUPPORT
-
 * Poly Mesh  
 * Nurbs Surface
 * Nurbs Curve
@@ -19,10 +17,8 @@ Maya toolkit used to export / import skin weights.
 
 
 #### INSTALLATION
-
-
 1. Download the latest release and unzip the folder where you want to live.
-2. Copy folder "tk_weight_manager" to `%USERPROFILE%\Documents\maya\mayaVersion\scripts`
+2. Copy folder "tk_weight_manager" to `%USERPROFILE%\Documents\maya\scripts`
 
 #### USAGE
  

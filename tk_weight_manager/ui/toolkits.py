@@ -11,13 +11,13 @@
 # Description: skinCluster weight machine
 #
 ###########################################################################################
-from QtSide import QtGui, QtWidgets
+from QtSide import QtWidgets
 from .resource import toolkits_qt
 from .proc.utils import __icon__
 
 
-class ToolKitsDialog(QtWidgets.QDialog, toolkits_qt.Ui_skinClusterToolKit_Dialog) :
-    def __init__(self, parent=None, machine=None) :
+class ToolKitsDialog(QtWidgets.QDialog, toolkits_qt.Ui_skinClusterToolKit_Dialog):
+    def __init__(self, parent=None, machine=None):
         super(ToolKitsDialog, self).__init__(parent)
         self.setupUi(self)
 
@@ -33,7 +33,7 @@ class ToolKitsDialog(QtWidgets.QDialog, toolkits_qt.Ui_skinClusterToolKit_Dialog
 
         self.__style()
 
-    def __style(self) :
+    def __style(self):
         self.skinClusterToolKit_getInfluence_pushButton.setIcon(__icon__('icon_link'))
         self.skinClusterToolKit_holdInfluence_pushButton.setIcon(__icon__('icon_lock'))
         self.skinClusterToolKit_unHoldSelectedInfluence_pushButton.setIcon(__icon__('icon_key'))
@@ -42,26 +42,26 @@ class ToolKitsDialog(QtWidgets.QDialog, toolkits_qt.Ui_skinClusterToolKit_Dialog
         self.skinClusterToolKit_resetBindPose_pushButton.setIcon(__icon__('icon_reBind'))
         self.skinClusterToolKit_removeUnusedInfluence_pushButton.setIcon(__icon__('icon_cleanInf'))
 
-    def __getInfluence(self) :
+    def __getInfluence(self):
         self.machine.getInfluence(node=None, select=1)
 
-    def __holdInfluence(self) :
+    def __holdInfluence(self):
         self.machine.holdInfluence(v=1)
 
-    def __unHoldSelectedInfluence(self) :
+    def __unHoldSelectedInfluence(self):
         self.machine.unholdSelectInfluence(v=0)
 
-    def __copyComponentWeight(self) :
+    def __copyComponentWeight(self):
         self.machine.takeComponentWeight()
 
-    def _pasteComponentWeight(self) :
+    def _pasteComponentWeight(self):
         self.machine.pasteComponentWeight()
 
-    def __resetBindPose(self) :
+    def __resetBindPose(self):
         self.machine.resetBindPose(node=None)
 
-    def __removeUnusedInfluence(self) :
+    def __removeUnusedInfluence(self):
         skinClusterNodes = self.machine.getSkinCluster(node=None)
-        if skinClusterNodes :
-            for skinClusterNode in skinClusterNodes :
+        if skinClusterNodes:
+            for skinClusterNode in skinClusterNodes:
                 self.machine.removeUnusedInfluence(skinClusterNode)

@@ -16,8 +16,8 @@ import json
 import fnmatch
 import shutil
 import pymel.core as pm
-from QtSide import QtCore, QtGui, QtWidgets
-from .proc.utils import __icon__, __pixmap__
+from QtSide import QtGui, QtWidgets
+from .proc.utils import __icon__, __pixmap__, to_utf8
 from .resource import manager_qt
 from . import toolkits
 
@@ -67,6 +67,7 @@ class MainDialog(QtWidgets.QDialog, manager_qt.Ui_skinClusterManager_Dialog):
         self.skinClusterManager_unHoldSelectedInfluence_pushButton.setIcon(__icon__('icon_key'))
         self.skinClusterManager_resetBindPose_pushButton.setIcon(__icon__('icon_reBind'))
         self.skinClusterManager_removeUnusedInfluence_pushButton.setIcon(__icon__('icon_cleanInf'))
+        self.resize(400, 600)
 
     def __connect_cmd(self):
         self.skinClusterManager_home_pushButton.clicked.connect(self.skinClusterManager_home_pushButton_cmd)
@@ -105,10 +106,11 @@ class MainDialog(QtWidgets.QDialog, manager_qt.Ui_skinClusterManager_Dialog):
             self.skinClusterManager_removeUnusedInfluence_pushButton_cmd)
 
     def skinClusterManager_home_pushButton_cmd(self):
-        dialog = pm.fileDialog2(ds=2, fileMode=3, caption='Set Root Path To :',
-                                dir='d:/', okc='Set Path', cc='Cancle')
+        dialog = pm.fileDialog2(
+            ds=2, fileMode=3, caption='Set Root Path To :', dir='d:/', okc='Set Path', cc='Cancel'
+        )
         if dialog:
-            self.config['root'] = str(dialog[0])
+            self.config['root'] = to_utf8(dialog[0])
             self.pathing = self.config['root']
             self.skinClusterManager_path_LineEdit_cmd()
             self.skinClusterManager_refresh_pushButton_cmd()
@@ -116,7 +118,7 @@ class MainDialog(QtWidgets.QDialog, manager_qt.Ui_skinClusterManager_Dialog):
 
     def skinClusterManager_folder_pushButton_cmd(self):
         dialog = QtWidgets.QInputDialog()
-        value = str(dialog.getText(None, 'Create New Folder', 'Enter Folder Name')[0])
+        value = to_utf8(dialog.getText(None, 'Create New Folder', 'Enter Folder Name')[0])
         if value:
             if os.path.exists(os.path.join(self.config['root'], value)):
                 raise NameError('Folder Already Exist !')
@@ -143,7 +145,6 @@ class MainDialog(QtWidgets.QDialog, manager_qt.Ui_skinClusterManager_Dialog):
                     newItem.linkPath = subPath
                     newItem.linkName = item
                     newItem.setText(item)
-
                     newItem.setIcon(__icon__('icon_folder'))
         except:
             pass
@@ -157,7 +158,7 @@ class MainDialog(QtWidgets.QDialog, manager_qt.Ui_skinClusterManager_Dialog):
     def skinClusterManager_tool_pushButton_cmd(self):
         ui = toolkits.ToolKitsDialog(self.parent, self.machine)
         ui.show()
-        ui.exec_()
+        ui.raise_()
 
     def skinClusterManager_path_LineEdit_cmd(self):
         try:
@@ -224,7 +225,7 @@ class MainDialog(QtWidgets.QDialog, manager_qt.Ui_skinClusterManager_Dialog):
                                                  )
                 if confirmDialog == 'Delete Flder':
                     try:
-                        os.rmdir(self.pathing)  ## os.rmdir : delete empty dir
+                        os.rmdir(self.pathing)  # os.rmdir : delete empty dir
                         listWidget.currentItem().setHidden(True)
                         self.skinClusterManager_one_groupBox.setEnabled(False)
                         self.skinClusterManager_two_listWidget.setEnabled(False)
@@ -258,17 +259,19 @@ class MainDialog(QtWidgets.QDialog, manager_qt.Ui_skinClusterManager_Dialog):
 
     def skinClusterManager_export_pushButton_cmd(self):
         self.skinClusterManager_progressBar.show()
-        self.machine.exportSkinWeight(exportPath=self.pathing,
-                                      QWidget=[self.skinClusterManager_progressBar,
-                                               self.skinClusterManager_two_listWidget])
+        self.machine.exportSkinWeight(
+            exportPath=self.pathing,
+            QWidget=[self.skinClusterManager_progressBar, self.skinClusterManager_two_listWidget]
+        )
         self.skinClusterManager_progressBar.setValue(0)
         self.skinClusterManager_progressBar.hide()
 
     def skinClusterManager_exportComponents_pushButton_cmd(self):
         self.skinClusterManager_progressBar.show()
-        self.machine.exportComponentsSkinWeight(exportPath=self.pathing,
-                                                QWidget=[self.skinClusterManager_progressBar,
-                                                         self.skinClusterManager_two_listWidget])
+        self.machine.exportComponentsSkinWeight(
+            exportPath=self.pathing,
+            QWidget=[self.skinClusterManager_progressBar, self.skinClusterManager_two_listWidget]
+        )
         self.skinClusterManager_progressBar.setValue(0)
         self.skinClusterManager_progressBar.hide()
 
@@ -324,7 +327,7 @@ class MainDialog(QtWidgets.QDialog, manager_qt.Ui_skinClusterManager_Dialog):
                     dataPath = item.linkPath
                     if os.path.isfile(dataPath):
                         try:
-                            os.remove(dataPath)  ## os.remove : delete file
+                            os.remove(dataPath)  # os.remove : delete file
                             item.setHidden(True)
                         except:
                             pass
@@ -364,7 +367,6 @@ class MainDialog(QtWidgets.QDialog, manager_qt.Ui_skinClusterManager_Dialog):
         configFile = os.path.join(configDir, CONFIG_FILE)
         if not os.path.exists(configDir):
             os.makedirs(configDir)
-
         # -- Write 2 File -- #
         with open(configFile.replace('\\', '/'), 'wb') as f:
             f.write(json.dumps(self.config, ensure_ascii=True, indent=4))

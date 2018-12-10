@@ -15,10 +15,7 @@ import os
 import time
 import getpass
 from QtSide import QtWidgets, QtGui
-from xml.etree.ElementTree import (ElementTree, 
-                                   Element, 
-                                   SubElement, 
-                                   parse)
+from xml.etree.ElementTree import ElementTree, Element, SubElement, parse
 import pymel.core as pm
 from ..ui.proc.utils import __pixmap__
 
@@ -27,70 +24,70 @@ class SkinClusterMachine(object):
     IGNORE_VALUE = 0.00001
     OBJ_TYPE = ['mesh', 'nurbsSurface', 'nurbsCurve', 'lattice']
 
-    def __init__(self) :
+    def __init__(self):
         self.user = getpass.getuser()
         self.mayaVersion = pm.versions.installName()
 
         self.componentInfluenceList = None
         self.componentSkinWeightList = None
 
-    def getTime(self) :
+    def getTime(self):
         return time.strftime('%Y/%m/%d', time.localtime(time.time()))
 
-    def getSkinCluster(self, node=None) :
+    def getSkinCluster(self, node=None):
         whiteList = []
-        if node == None :
+        if node is None:
             nodes = pm.selected()
-            if nodes :
+            if nodes:
                 node = nodes[0]
-            else :
+            else:
                 pm.displayWarning('nothing selected')
-        try :
+        try:
             nodeShapes = node.getShapes()
-            if nodeShapes :
-                for nodeShape in nodeShapes :
+            if nodeShapes:
+                for nodeShape in nodeShapes:
                     historys = nodeShape.listHistory(pruneDagObjects=True, interestLevel=1)
-                    for history in historys :
-                        if history.type() == 'skinCluster' :
+                    for history in historys:
+                        if history.type() == 'skinCluster':
                             whiteList.append(history)
-        except :
+        except:
             pass
 
         skinClusterList = list(set(whiteList))
         skinClusterList.sort(key=whiteList.index)
         return skinClusterList
 
-    def getInfluence(self, node=None, select=False) :
-        if node == None :
+    def getInfluence(self, node=None, select=False):
+        if node is None:
             nodes = pm.selected()
-            if nodes :
+            if nodes:
                 node = nodes[0]
-            else :
+            else:
                 pm.displayWarning('nothing selected')
                 return
         skinClusterNodes = self.getSkinCluster(node=node)
-        if len(skinClusterNodes) :
+        if len(skinClusterNodes):
             skinClusterNode = skinClusterNodes[0]
             influence = pm.skinCluster(skinClusterNode, q=True, inf=True)
-            if select :
+            if select:
                 pm.select(influence, r=True)
             return influence
-        else : 
+        else:
             pm.displayWarning('no skin')
 
-    def takeComponentWeight(self) :
+    def takeComponentWeight(self):
         components = pm.selected(fl=True)
-        if len(components) != 1 :
+        if len(components) != 1:
             pm.displayWarning('can only select one component')
             return
         component = components[0]
-        if component.node().type() not in self.OBJ_TYPE :
+        if component.node().type() not in self.OBJ_TYPE:
             pm.displayWarning('wrong select, component needed')
             return
 
         node = component.node().getParent()
         skinClusterNodes = self.getSkinCluster(node=node)
-        if skinClusterNodes :
+        if skinClusterNodes:
             self.componentInfluenceList = pm.skinPercent(skinClusterNodes[0], 
                                                          component, 
                                                          ignoreBelow=self.IGNORE_VALUE, 
@@ -102,93 +99,93 @@ class SkinClusterMachine(object):
                                                           query=True, 
                                                           v=True)
 
-        else :
+        else:
             pm.displayWarning('no skin')
 
-    def pasteComponentWeight(self) :
-        if self.componentInfluenceList == None or self.componentSkinWeightList == None :
+    def pasteComponentWeight(self):
+        if self.componentInfluenceList is None or self.componentSkinWeightList is None:
             pm.displayWarning('no value to paste')
             return
             
         components = pm.selected(fl=True)
-        for component in components :
-            if component.node().type() not in self.OBJ_TYPE :
+        for component in components:
+            if component.node().type() not in self.OBJ_TYPE:
                 pm.displayWarning('wrong select %s' %component)
                 continue
 
             node = component.node().getParent()
             skinClusterNodes = self.getSkinCluster(node=node)
-            if not skinClusterNodes :
+            if not skinClusterNodes:
                 pm.displayWarning('no skin %s' %node)
                 continue
 
             skinPercentList = []
-            for i,each in enumerate(self.componentInfluenceList) :
+            for i,each in enumerate(self.componentInfluenceList):
                 skinPercentList.append([each, self.componentSkinWeightList[i]])
             pm.skinPercent(skinClusterNodes[0], component, transformValue=skinPercentList)
 
-    def lockWeightList(self, skinClusterNode, v=False) :
+    def lockWeightList(self, skinClusterNode, v=False):
         skinClusterNode.weightList.set(lock=v)
 
-    def holdInfluence(self, v=False) :
+    def holdInfluence(self, v=False):
         nodes = pm.selected()
-        if len(nodes) :
+        if len(nodes):
             influences = self.getInfluence(node=nodes[0], select=False)
-            if influences :
-                for influence in influences :
+            if influences:
+                for influence in influences:
                     influence.liw.set(v)
-        else :
+        else:
             pm.displayWarning('nothing selected')
 
-    def unholdSelectInfluence(self, v=0) :
+    def unholdSelectInfluence(self, v=0):
         nodes = pm.selected()
         if len(nodes) >= 2:
-            if nodes[0].getShape() != None :
-                if nodes[0].getShape().type() in self.OBJ_TYPE :
+            if nodes[0].getShape() is not None:
+                if nodes[0].getShape().type() in self.OBJ_TYPE:
                     node = nodes[0]
                     influences = self.getInfluence(node=node, select=False)
-                    if influences :
-                        for node in nodes :
-                            if node in influences :
+                    if influences:
+                        for node in nodes:
+                            if node in influences:
                                 node.liw.set(v)
-                else :
+                else:
                     pm.displayWarning('wrong selected ,please select object first ,then select influences')
-            else :
+            else:
                 pm.displayWarning('wrong selected ,please select object first ,then select influences')
-        else :
+        else:
             pm.displayWarning('wrong selected ,please select object first ,then select influences')
 
-    def resetBindPose(self, node=None) :
-        if node == None :
+    def resetBindPose(self, node=None):
+        if node is None:
             nodes = pm.selected()
-        for eachNode in nodes :
+        for eachNode in nodes:
             skinClusterNodes = self.getSkinCluster(node=eachNode)
-            if len(skinClusterNodes) :
-                for skinClusterNode in skinClusterNodes :
+            if len(skinClusterNodes):
+                for skinClusterNode in skinClusterNodes:
                     matrixList = skinClusterNode.matrix.get(mi=True)
-                    for index in matrixList :
+                    for index in matrixList:
                         inf = skinClusterNode.matrix[index].listConnections(s=True, d=False, scn=True)
-                        if inf :
+                        if inf:
                             inverseMatrix = inf[0].worldInverseMatrix[0].get()
                             skinClusterNode.pm[index].set(inverseMatrix, type='matrix')
 
-    def delBindPose(self) :
+    def delBindPose(self):
         bindPoseNodes = pm.ls(type='dagPose')
-        for bindPoseNode in bindPoseNodes :
+        for bindPoseNode in bindPoseNodes:
             bindPoseNode.set(lock=False)
             pm.delete(bindPoseNode)
 
-    def renameSkinClusterName(self) :
+    def renameSkinClusterName(self):
         timeString = time.strftime("%Y%b%d%H%M", time.localtime())
         skinClusterNodes = pm.ls(type='skinCluster')
-        for index,skinClusterNode in enumerate(skinClusterNodes) :
+        for index,skinClusterNode in enumerate(skinClusterNodes):
             skinClusterNode.rename("rig%s_%d_skinCluster" %(timeString, index))
 
-    def removeUnusedInfluence(self, skinClusterNode) :
+    def removeUnusedInfluence(self, skinClusterNode):
         allInfs = pm.skinCluster(skinClusterNode, q=True, inf=True)
         goodInfs = pm.skinCluster(skinClusterNode, q=True, wi=True)
         badInfs = list(set(allInfs).difference(set(goodInfs)))
-        if len(badInfs) :
+        if len(badInfs):
             pm.progressWindow(title='', progress=0, status='Remove Unused Influence...', 
                               isInterruptable=True, maxValue=len(badInfs))
             nodeState = skinClusterNode.nodeState.get()
@@ -198,8 +195,8 @@ class SkinClusterMachine(object):
             skinClusterNode.nodeState.set(lock=False)
 
             amount = 0
-            for badInf in badInfs :
-                if pm.progressWindow(query=True, isCancelled=True) :
+            for badInf in badInfs:
+                if pm.progressWindow(query=True, isCancelled=True):
                     break
                 skinClusterNode.removeInfluence(badInf)
                 amount += 1
@@ -208,25 +205,25 @@ class SkinClusterMachine(object):
             skinClusterNode.nodeState.set(nodeState)
             skinClusterNode.nodeState.set(lock=lockState)
 
-    def getShapeElement(self, shape=None, type=None) :
-        if type == 'mesh' :
+    def getShapeElement(self, shape=None, type=None):
+        if type == 'mesh':
             countElement = shape.numVertices()
-        elif type == 'nurbsSurface' :
+        elif type == 'nurbsSurface':
             countElement = [shape.numCVsInU(), shape.numCVsInV()]            
-        elif type == 'nurbsCurve' :
+        elif type == 'nurbsCurve':
             countElement = shape.numCVs()
-        elif type == 'lattice' :
+        elif type == 'lattice':
             countElement = shape.getDivisions()
-        else :
-            pass
+        else:
+            countElement = None
         return countElement
 
     def __exportSkinWeight(self, node=None, shape=None, type=None, 
-                           skinClusterNode=None, exportPath=None, QWidget=None) :
+                           skinClusterNode=None, exportPath=None, QWidget=None):
 
         countElement = self.getShapeElement(shape=shape, type=type)
 
-        mainInfluence = self.getInfluence(node=node, select=0)
+        mainInfluence = self.getInfluence(node=node, select=False)
         mainInfluenceList =[influence.name() for influence in mainInfluence]
 
         # - Mian Data Tree - #
@@ -247,21 +244,21 @@ class SkinClusterMachine(object):
         SubElement(nodeInfoElement, 'Type', {'value': str(type)})
         if type == 'mesh' or type == 'nurbsCurve':
             SubElement(nodeInfoElement, 'Element', {'value': str(countElement)})
-        elif type == 'nurbsSurface' :
+        elif type == 'nurbsSurface':
             SubElement(nodeInfoElement, 'Element', {'value': str(countElement[0]*countElement[1])})
-        elif type == 'lattice' :
+        elif type == 'lattice':
             SubElement(nodeInfoElement, 'Element', {'value': str(countElement[0]*countElement[1]*countElement[2])})
-        else :
+        else:
             pass
         SubElement(nodeInfoElement, 'Influence', {'value': str(mainInfluenceList)})
         dataInfoMain.append(nodeInfoElement)
 
         # - Data Vertex Weight - #
         dataElement = Element('dataElement')
-        if type == 'mesh' :
-            if QWidget != None :
+        if type == 'mesh':
+            if QWidget is not None:
                 QWidget[0].setRange(0, countElement)
-            for i in range(countElement) :
+            for i in range(countElement):
                 influenceList = pm.skinPercent(skinClusterNode, 
                                                node.vtx[i], 
                                                ignoreBelow=self.IGNORE_VALUE, 
@@ -276,115 +273,139 @@ class SkinClusterMachine(object):
                 SubElement(dataElement, 'Vertex', {'index': str(i), 
                                                    'influence': str(influenceIndexList), 
                                                    'weight': str(weightList)})
-                try :
+                try:
                     QWidget[0].setValue(i+1)
-                except : pass
+                except:
+                    pass
 
-        elif type == 'nurbsSurface' :
-            if QWidget != None :
+        elif type == 'nurbsSurface':
+            if QWidget is not None:
                 QWidget[0].setRange(0, countElement[0]*countElement[1])
             i = 0
-            for u in range(countElement[0]) :
-                for v in range(countElement[1]) :
-                    influenceList = pm.skinPercent(skinClusterNode, node.cv[u][v], ignoreBelow=self.IGNORE_VALUE, query=True, t=None)
+            for u in range(countElement[0]):
+                for v in range(countElement[1]):
+                    influenceList = pm.skinPercent(
+                        skinClusterNode, node.cv[u][v], ignoreBelow=self.IGNORE_VALUE, query=True, t=None
+                    )
                     influenceIndexList = [mainInfluenceList.index(eachInfluence) for eachInfluence in influenceList]
-                    weightList = pm.skinPercent(skinClusterNode, node.cv[u][v], ignoreBelow=self.IGNORE_VALUE, query=True, v=True)
-                    SubElement(dataElement, 'Vertex', {'index': str([u,v]), 'influence': str(influenceIndexList), 'weight': str(weightList)})
+                    weightList = pm.skinPercent(
+                        skinClusterNode, node.cv[u][v], ignoreBelow=self.IGNORE_VALUE, query=True, v=True
+                    )
+                    SubElement(
+                        dataElement, 'Vertex',
+                        {'index': str([u, v]), 'influence': str(influenceIndexList), 'weight': str(weightList)}
+                    )
                     i += 1
-                    try :
+                    try:
                         QWidget[0].setValue(i)
-                    except :
+                    except:
                         pass
                       
-        elif type == 'nurbsCurve' :
-            if QWidget != None :
+        elif type == 'nurbsCurve':
+            if QWidget is not None:
                 QWidget[0].setRange(0, countElement)
-            for i in range(countElement) :
-                influenceList = pm.skinPercent(skinClusterNode, node.cv[i], ignoreBelow=self.IGNORE_VALUE, query=True, t=None)
+            for i in range(countElement):
+                influenceList = pm.skinPercent(
+                    skinClusterNode, node.cv[i], ignoreBelow=self.IGNORE_VALUE, query=True, t=None
+                )
                 influenceIndexList = [mainInfluenceList.index(eachInfluence) for eachInfluence in influenceList]
-                weightList = pm.skinPercent(skinClusterNode, node.cv[i], ignoreBelow=self.IGNORE_VALUE, query=True, v=True)
-                SubElement(dataElement, 'Vertex', {'index': str(i), 'influence': str(influenceIndexList), 'weight': str(weightList)})
+                weightList = pm.skinPercent(
+                    skinClusterNode, node.cv[i], ignoreBelow=self.IGNORE_VALUE, query=True, v=True
+                )
+                SubElement(
+                    dataElement, 'Vertex',
+                    {'index': str(i), 'influence': str(influenceIndexList), 'weight': str(weightList)}
+                )
 
-        elif type == 'lattice' :
-            if QWidget != None :
+        elif type == 'lattice':
+            if QWidget is not None:
                 QWidget[0].setRange(0, countElement[0]*countElement[1]*countElement[2])
             i = 0
-            for sd in range(countElement[0]) :
-                for td in range(countElement[1]) :
-                    for ud in range(countElement[2]) :
-                       influenceList = pm.skinPercent(skinClusterNode, node.pt[sd][td][ud], ignoreBelow=self.IGNORE_VALUE, query=True, t=None)
+            for sd in range(countElement[0]):
+                for td in range(countElement[1]):
+                    for ud in range(countElement[2]):
+                       influenceList = pm.skinPercent(
+                           skinClusterNode, node.pt[sd][td][ud], ignoreBelow=self.IGNORE_VALUE, query=True, t=None
+                       )
                        influenceIndexList = [mainInfluenceList.index(eachInfluence) for eachInfluence in influenceList]
-                       weightList = pm.skinPercent(skinClusterNode, node.pt[sd][td][ud], ignoreBelow=self.IGNORE_VALUE, query=True, v=True)
-                       SubElement(dataElement, 'Vertex', {'index': str([sd,td,ud]), 'influence': str(influenceIndexList), 'weight': str(weightList)})
-                       try :
+                       weightList = pm.skinPercent(
+                           skinClusterNode, node.pt[sd][td][ud], ignoreBelow=self.IGNORE_VALUE, query=True, v=True
+                       )
+                       SubElement(
+                           dataElement, 'Vertex',
+                           {'index': str([sd, td, ud]), 'influence': str(influenceIndexList), 'weight': str(weightList)}
+                       )
+                       try:
                            QWidget[0].setValue(i+1)
-                       except :
-                        pass         
-        else :
+                       except:
+                           pass
+        else:
             pass
         dataInfoMain.append(dataElement)
 
         # - Write XML File - #
-        exportPath = os.path.join(exportPath, (node.name().replace('|','#') + '[' + type + '].xml'))
+        exportPath = os.path.join(exportPath, (node.name().replace('|', '#') + '[' + type + '].xml'))
         dataInfoTree.write(exportPath, 'utf-8')
 
-    def exportSkinWeight(self, exportPath=None, QWidget=None) :
-        if QWidget != None :
+    def exportSkinWeight(self, exportPath=None, QWidget=None):
+        if QWidget is not None:
             QWidget[0].setValue(0)
         nodes = pm.selected(fl=True)
-        if not len(nodes) :
+        if not len(nodes):
             pm.displayWarning('nothing selected')
             return
-        for node in nodes :
+        for node in nodes:
             nodeShape = node.getShape()
-            if nodeShape != None :
+            if nodeShape is not None:
                 nodeShapeType = nodeShape.type()
-                if nodeShapeType in self.OBJ_TYPE :
+                if nodeShapeType in self.OBJ_TYPE:
                     skinClusterNodes = self.getSkinCluster(node=node)
-                    if len(skinClusterNodes) :
+                    if len(skinClusterNodes):
                         self.__exportSkinWeight(node=node, 
                                                 shape=nodeShape, 
                                                 type=nodeShapeType, 
                                                 skinClusterNode=skinClusterNodes[0], 
                                                 exportPath=exportPath, 
                                                 QWidget=QWidget)
-                        if QWidget != None :
+                        if QWidget is not None:
                             QWidget[0].setValue(0)
                             newItem = QtWidgets.QListWidgetItem(QWidget[1])
                             newItem.linkType = 'weight'
-                            newItem.linkPath = os.path.join(exportPath, (node.name().replace('|','#') + '[' + nodeShapeType + '].xml'))
+                            newItem.linkPath = os.path.join(
+                                exportPath, (node.name().replace('|', '#') + '[' + nodeShapeType + '].xml')
+                            )
                             newItem.linkName = node.name() + '[' + nodeShapeType + '].xml'
                             newItem.setText(node.name())
                             icon = QtGui.QIcon()
-                            if nodeShapeType == 'mesh' :
+                            if nodeShapeType == 'mesh':
                                 icon.addPixmap(__pixmap__('icon_mesh'))
-                            elif nodeShapeType == 'nurbsSurface' :
+                            elif nodeShapeType == 'nurbsSurface':
                                 icon.addPixmap(__pixmap__('icon_surface'))
-                            elif nodeShapeType == 'nurbsCurve' :
+                            elif nodeShapeType == 'nurbsCurve':
                                 icon.addPixmap(__pixmap__('icon_curve'))
-                            elif nodeShapeType == 'lattice' :
+                            elif nodeShapeType == 'lattice':
                                 icon.addPixmap(__pixmap__('icon_lattice'))
                             newItem.setIcon(icon)
-                    else :
+                    else:
                         pm.displayWarning('find no skinCluster on object %s'%node)
-                else :
+                else:
                     pm.displayWarning('object %s shape node not support'%node)
-            else :
+            else:
                 pm.displayWarning('object %s has no shape'%node)
 
-    def exportComponentsSkinWeight(self, exportPath=None, QWidget=None) :
+    def exportComponentsSkinWeight(self, exportPath=None, QWidget=None):
         nodesTempList = []
         components = pm.selected(fl=True)
-        if components :
-            for component in components :
+        if components:
+            for component in components:
                 nodeShape = component.node()
-                if nodeShape not in nodesTempList :
+                if nodeShape not in nodesTempList:
                     nodesTempList.append(nodeShape)
-        if len(nodesTempList) != 1 :
+        if len(nodesTempList) != 1:
             pm.displayWarning('this method support only one obj components right now...')
             return
 
-        if nodesTempList[0].type() not in self.OBJ_TYPE :
+        if nodesTempList[0].type() not in self.OBJ_TYPE:
             pm.displayWarning('this method only support obj components...')
             return
 
@@ -393,8 +414,8 @@ class SkinClusterMachine(object):
         countElement = len(components)
 
         skinClusterNodes = self.getSkinCluster(node=node)
-        if skinClusterNodes :
-            if QWidget != None :
+        if skinClusterNodes:
+            if QWidget is not None:
                 QWidget[0].setRange(0, countElement)
 
             mainInfluence = self.getInfluence(node=node, select=False)
@@ -422,9 +443,9 @@ class SkinClusterMachine(object):
 
             # - Data Vertex Weight - #
             dataElement = Element('dataElement')
-            if type == 'mesh' :
+            if type == 'mesh':
                 i = 0
-                for component in components :
+                for component in components:
                     influenceList = pm.skinPercent(skinClusterNodes[0], 
                                                    component, 
                                                    ignoreBelow=self.IGNORE_VALUE, 
@@ -440,13 +461,14 @@ class SkinClusterMachine(object):
                                                        'influence': str(influenceIndexList), 
                                                        'weight': str(weightList)})
                     i += 1
-                    try :
+                    try:
                         QWidget[0].setValue(i)
-                    except : pass
+                    except:
+                        pass
 
-            elif type == 'nurbsSurface' :
+            elif type == 'nurbsSurface':
                 i = 0
-                for component in components :
+                for component in components:
                     influenceList = pm.skinPercent(skinClusterNodes[0], 
                                                    component, 
                                                    ignoreBelow=self.IGNORE_VALUE, 
@@ -458,17 +480,23 @@ class SkinClusterMachine(object):
                                                 ignoreBelow=self.IGNORE_VALUE, 
                                                 query=True, 
                                                 v=True)
-                    SubElement(dataElement, 'Vertex',{'index': str([component.currentItemIndex()[0], component.currentItemIndex()[1]]), 
-                                                      'influence': str(influenceIndexList), 
-                                                      'weight': str(weightList)})                
+                    SubElement(
+                        dataElement, 'Vertex',
+                        {
+                            'index': str([component.currentItemIndex()[0], component.currentItemIndex()[1]]),
+                            'influence': str(influenceIndexList),
+                            'weight': str(weightList)
+                        }
+                    )
                     i += 1
-                    try :
+                    try:
                         QWidget[0].setValue(i)
-                    except : pass
+                    except:
+                        pass
 
-            elif type == 'nurbsCurve' :
+            elif type == 'nurbsCurve':
                 i = 0
-                for component in components :
+                for component in components:
                     influenceList = pm.skinPercent(skinClusterNodes[0], 
                                                    component, 
                                                    ignoreBelow=self.IGNORE_VALUE, 
@@ -484,25 +512,40 @@ class SkinClusterMachine(object):
                                                        'influence': str(influenceIndexList), 
                                                        'weight': str(weightList)})   
                     i += 1
-                    try :
+                    try:
                         QWidget[0].setValue(i)
-                    except : pass
+                    except:
+                        pass
 
-            elif type == 'lattice' :
+            elif type == 'lattice':
                 i = 0
-                for component in components :
-                    influenceList = pm.skinPercent(skinClusterNodes[0], component, ignoreBelow=self.IGNORE_VALUE, query=True, t=None)
+                for component in components:
+                    influenceList = pm.skinPercent(
+                        skinClusterNodes[0], component, ignoreBelow=self.IGNORE_VALUE, query=True, t=None
+                    )
                     influenceIndexList = [mainInfluenceList.index(eachInfluence) for eachInfluence in influenceList]
-                    weightList = pm.skinPercent(skinClusterNodes[0],component,ignoreBelow=self.IGNORE_VALUE,query=True,v=True)
-                    SubElement(dataElement, 'Vertex', {'index': str([component.currentItemIndex()[0], 
-                                                                     component.currentItemIndex()[1], 
-                                                                     component.currentItemIndex()[2]]), 
-                                                       'influence': str(influenceIndexList), 
-                                                       'weight': str(weightList)})  
+                    weightList = pm.skinPercent(
+                        skinClusterNodes[0], component, ignoreBelow=self.IGNORE_VALUE, query=True, v=True
+                    )
+                    SubElement(
+                        dataElement, 'Vertex',
+                        {
+                            'index': str(
+                                [
+                                    component.currentItemIndex()[0],
+                                    component.currentItemIndex()[1],
+                                    component.currentItemIndex()[2]
+                                ]
+                            ),
+                            'influence': str(influenceIndexList),
+                            'weight': str(weightList)
+                        }
+                    )
                     i += 1
-                    try :
+                    try:
                         QWidget[0].setValue(i)
-                    except : pass
+                    except:
+                        pass
 
             dataInfoMain.append(dataElement)
 
@@ -510,7 +553,7 @@ class SkinClusterMachine(object):
             exportPath = os.path.join(exportPath, (node.name().replace('|','#') + '[' + type + '].xml'))
             dataInfoTree.write(exportPath, 'utf-8')
 
-            if QWidget != None :
+            if QWidget is not None:
                 QWidget[0].setValue(0)
                 newItem = QtWidgets.QListWidgetItem(QWidget[1])
                 newItem.linkType = 'weight'
@@ -518,20 +561,20 @@ class SkinClusterMachine(object):
                 newItem.linkName = node.name() + '[' + type + '].xml'
                 newItem.setText(node.name())
                 icon = QtGui.QIcon()
-                if type == 'mesh' :
+                if type == 'mesh':
                     icon.addPixmap(__pixmap__('icon_mesh'))
-                elif type == 'nurbsSurface' :
+                elif type == 'nurbsSurface':
                     icon.addPixmap(__pixmap__('icon_surface'))
-                elif type == 'nurbsCurve' :
+                elif type == 'nurbsCurve':
                     icon.addPixmap(__pixmap__('icon_curve'))
-                elif type == 'lattice' :
+                elif type == 'lattice':
                     icon.addPixmap(__pixmap__('icon_lattice'))
                 newItem.setIcon(icon)
-        else :
+        else:
             pm.displayWarning('no skinCluster found %s' %node)
 
     def __importSkinWeight(self, node=None, type=None, skinClusterNode=None, 
-                           influence=None, dataElement=None, QWidget=None) :
+                           influence=None, dataElement=None, QWidget=None):
         count = 0
         for element in dataElement.getiterator('Vertex'):
             weightList = eval(element.attrib['weight'])
@@ -539,26 +582,26 @@ class SkinClusterMachine(object):
             index = eval(element.attrib['index'])
 
             skinPercentList = []
-            for i,each in enumerate(influenceList) :
+            for i,each in enumerate(influenceList):
                 skinPercentList.append([influence[each], weightList[i]])
 
-            if type == 'mesh' :
+            if type == 'mesh':
                 pm.skinPercent(skinClusterNode, node.vtx[index], transformValue=skinPercentList)
 
-            elif type == 'nurbsSurface' :
+            elif type == 'nurbsSurface':
                 pm.skinPercent(skinClusterNode, node.cv[index[0]][index[1]], transformValue=skinPercentList)
 
-            elif type == 'nurbsCurve' :
+            elif type == 'nurbsCurve':
                 pm.skinPercent(skinClusterNode, node.cv[index], transformValue=skinPercentList)
 
-            elif type == 'lattice' :
+            elif type == 'lattice':
                 pm.skinPercent(skinClusterNode, node.pt[index[0]][index[1]][index[2]], transformValue=skinPercentList)
-            else : pass
+            else: pass
             count += 1
-            if QWidget != None :
+            if QWidget is not None:
                 QWidget[0].setValue(count)
 
-    def importSkinWeight(self, method=None, weightFilePath=None, QWidget=None) :
+    def importSkinWeight(self, method=None, weightFilePath=None, QWidget=None):
         xmlTree = parse(weightFilePath)
         rootElement = xmlTree.getroot()
         nodeInfoElement = rootElement.find('nodeInfo')
@@ -568,55 +611,55 @@ class SkinClusterMachine(object):
         _element = eval(nodeInfoElement.find('Element').attrib['value'])
         _influence = eval(nodeInfoElement.find('Influence').attrib['value'])
 
-        if method == 'batch' :           
-            if pm.objExists(_node) :
+        if method == 'batch':
+            if pm.objExists(_node):
                 node = pm.PyNode(_node)                
-            else :
+            else:
                 pm.displayWarning('%s not found in sence'%_node)
                 return
 
-        elif method == 'single' :
+        elif method == 'single':
             nodes = pm.selected()
             if len(nodes):
                 node = nodes[0]
-            else :
+            else:
                 pm.displayWarning('nothing selected')
                 return 
-        else :
+        else:
             return
 
         shape = node.getShape()
-        if shape :
+        if shape:
             type = shape.type()
-            if type == _type :
+            if type == _type:
                 skinClusterNodes = self.getSkinCluster(node)
-                if len(skinClusterNodes) :
+                if len(skinClusterNodes):
                     skinClusterNode = skinClusterNodes[0]
-                else :
+                else:
                     skinClusterNode = pm.skinCluster(_influence, node, sm=0, tsb=True)
 
-                if QWidget != None :
+                if QWidget is not None:
                     QWidget[0].setValue(0)
                     QWidget[0].setRange(0, _element)
 
                 self.__importSkinWeight(node=node, type=_type, skinClusterNode=skinClusterNode, 
                                         influence=_influence, dataElement=dataElement, QWidget=QWidget)
-            else :
+            else:
                 pm.displayWarning('%s shape type not match '%node.name())
-        else :
+        else:
             pm.displayWarning('oject %s has no shape '%node.name())
 
-    def getInfluenceFromWeightData(self, weightFilePath=None) :
+    def getInfluenceFromWeightData(self, weightFilePath=None):
         xmlTree = parse(weightFilePath)
         rootElement = xmlTree.getroot()
         badList = []
-        for element in rootElement.getiterator('nodeInfo') :
+        for element in rootElement.getiterator('nodeInfo'):
             influences = eval(element.find('Influence').attrib['value'])
             pm.select(cl=True)
-            for influence in influences :
-                if not pm.objExists(influence) :
+            for influence in influences:
+                if not pm.objExists(influence):
                     badList.append(influence)
-            if len(badList) :
+            if len(badList):
                 print '%s not found in sence' %badList
-            else :
+            else:
                 pm.select(influences, r=True)
